@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
 #root {
+  font-family: 'Inter', sans-serif;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -6,7 +9,7 @@
   min-height: 100vh;
   overflow: hidden;
   /* background: linear-gradient(#fff, #999); */
-  background: linear-gradient(#e66465, #9198e5);
+  background: #171A23;
 }
 
 #root>div {
@@ -14,6 +17,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 .app>div {
@@ -21,6 +25,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 .row {
@@ -32,9 +37,8 @@
 }
 
 h1 {
-  font-family: 'Damion', cursive;
   color: #fff;
-  text-shadow: 0px 0px 60px 0px rgba(0,0,0,0.30);
+  text-shadow: 0px 0px 60px 0px rgba(54, 53, 53, 0.3);
 }
 
 h2 {
@@ -49,15 +53,16 @@ h2 {
   width: 90vw;
   max-width: 260px;
   height: 300px;
+  margin-bottom: 10rem;
 }
 
 .card {
   position: relative;
   background-color: #fff;
   width: 80vw;
-  max-width: 260px;
-  height: 300px;
-  box-shadow: 0px 0px 60px 0px rgba(0,0,0,0.30);
+  max-width: 420px;
+  margin-left: -5em;
+  height: 400px;
   border-radius: 20px;
   background-size: cover;
   background-position: center;
@@ -90,6 +95,7 @@ h2 {
 }
 
 .buttons {
+  font-family: 'Inter', sans-serif;
   margin: 20px;
   display: flex;
 }
@@ -121,4 +127,20 @@ h2 {
   57%  { transform: scale(1,1) }
   64%  { transform: scale(1,1) }
   100% { transform: scale(1,1) }
+}
+
+@media only screen and (max-width: 470px) {
+  h1 {
+ font-size: 1.6rem;
+ margin: 1rem;
+  }
+.infoText{
+ font-size: 1rem;
+ width: 80%;
+}
+  .card {
+
+    margin-left: -.5em;
+
+  }
 }

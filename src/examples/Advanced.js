@@ -1,82 +1,139 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo } from "react";
 // import TinderCard from '../react-tinder-card/index'
-import TinderCard from 'react-tinder-card'
+import TinderCard from "react-tinder-card";
+import axios from "axios";
+
+import { getRandomMeme } from "@blad3mak3r/reddit-memes";
+
+let subreddits = ["Cryptomemeshots", "bitcoinmemes", "cryptomemes"];
+let subreddit = subreddits[Math.floor(Math.random() * subreddits.length)];
 
 const db = [
   {
-    name: 'Richard Hendricks',
-    url: './img/richard.jpg'
+    title: "If you can't hodl, you won't be rich",
+    url: "https://preview.redd.it/rz852dq6awi71.jpg?width=640&crop=smart&auto=webp&s=4e77b8bfdedd39a2443e8adf9af2a4ead06fb531",
   },
   {
-    name: 'Erlich Bachman',
-    url: './img/erlich.jpg'
+    title: "When the bullrun is in crypto market and not in the stocks. ",
+    url: "https://preview.redd.it/rz852dq6awi71.jpg?width=640&crop=smart&auto=webp&s=4e77b8bfdedd39a2443e8adf9af2a4ead06fb531",
   },
   {
-    name: 'Monica Hall',
-    url: './img/monica.jpg'
+    title: "If you can't hodl, you won't be rich",
+    url: "https://preview.redd.it/rz852dq6awi71.jpg?width=640&crop=smart&auto=webp&s=4e77b8bfdedd39a2443e8adf9af2a4ead06fb531",
   },
   {
-    name: 'Jared Dunn',
-    url: './img/jared.jpg'
+    title: "If you can't hodl, you won't be rich",
+    url: "https://preview.redd.it/rz852dq6awi71.jpg?width=640&crop=smart&auto=webp&s=4e77b8bfdedd39a2443e8adf9af2a4ead06fb531",
   },
   {
-    name: 'Dinesh Chugtai',
-    url: './img/dinesh.jpg'
-  }
-]
+    title: "If you can't hodl, you won't be rich",
+    url: "https://preview.redd.it/rz852dq6awi71.jpg?width=640&crop=smart&auto=webp&s=4e77b8bfdedd39a2443e8adf9af2a4ead06fb531",
+  },
+  {
+    title: "If you can't hodl, you won't be rich",
+    url: "https://preview.redd.it/rz852dq6awi71.jpg?width=640&crop=smart&auto=webp&s=4e77b8bfdedd39a2443e8adf9af2a4ead06fb531",
+  },
+];
 
-const alreadyRemoved = []
-let charactersState = db // This fixes issues with updating characters state forcing it to use the current state and not the state that was active when the card was created.
+const after = "";
+setInterval(() => {
+  axios.get(`https://reddit.com/r/${subreddit}.json?after=${after}`)
+    .then((response) => response.json())
+    .then((body) => {
+      after = body.data.after;
+      for (let index = 0; index < body.data.children.length; index++) {
+        if (body.data.children[index].data.post_hint === "image") {
+          db.push({
+            title: body.data.children[index].data.title,
+            url: body.data.children[index].data.url_overriden_by_dest,
+            id : body.data.children[index].data.title
+          });
+        }
+      }
+    });
+}, 3000);
 
-function Advanced () {
-  const [characters, setCharacters] = useState(db)
-  const [lastDirection, setLastDirection] = useState()
 
-  const childRefs = useMemo(() => Array(db.length).fill(0).map(i => React.createRef()), [])
 
-  const swiped = (direction, nameToDelete) => {
-    console.log('removing: ' + nameToDelete)
-    setLastDirection(direction)
-    alreadyRemoved.push(nameToDelete)
-  }
+const alreadyRemoved = [];
 
-  const outOfFrame = (name) => {
-    console.log(name + ' left the screen!')
-    charactersState = charactersState.filter(character => character.name !== name)
-    setCharacters(charactersState)
-  }
+let charactersState = db; // This fixes issues with updating characters state forcing it to use the current state and not the state that was active when the card was created.
+
+function Advanced() {
+ 
+  const [characters, setCharacters] = useState(db);
+  const [lastDirection, setLastDirection] = useState();
+
+  const childRefs = useMemo(
+    () =>
+      Array(db.length)
+        .fill(0)
+        .map((i) => React.createRef()),
+    []
+  );
+
+  const swiped = (direction, titleToDelete) => {
+    console.log("removing: " + titleToDelete);
+    setLastDirection(direction);
+    alreadyRemoved.push(titleToDelete);
+  };
+
+  const outOfFrame = (title) => {
+    console.log(title + " left the screen!");
+    charactersState = charactersState.filter(
+      (character) => character.title !== title
+    );
+    setCharacters(charactersState);
+  };
 
   const swipe = (dir) => {
-    const cardsLeft = characters.filter(person => !alreadyRemoved.includes(person.name))
+    const cardsLeft = characters.filter(
+      (person) => !alreadyRemoved.includes(person.title)
+    );
     if (cardsLeft.length) {
-      const toBeRemoved = cardsLeft[cardsLeft.length - 1].name // Find the card object to be removed
-      const index = db.map(person => person.name).indexOf(toBeRemoved) // Find the index of which to make the reference to
-      alreadyRemoved.push(toBeRemoved) // Make sure the next card gets removed next time if this card do not have time to exit the screen
-      childRefs[index].current.swipe(dir) // Swipe the card!
+      const toBeRemoved = cardsLeft[cardsLeft.length - 1].title; // Find the card object to be removed
+      const index = db.map((person) => person.title).indexOf(toBeRemoved); // Find the index of which to make the reference to
+      alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
+      childRefs[index].current.swipe(dir); // Swipe the card!
     }
-  }
+  };
 
   return (
     <div>
-      <link href='https://fonts.googleapis.com/css?family=Damion&display=swap' rel='stylesheet' />
-      <link href='https://fonts.googleapis.com/css?family=Alatsi&display=swap' rel='stylesheet' />
-      <h1>React Tinder Card</h1>
-      <div className='cardContainer'>
-        {characters.map((character, index) =>
-          <TinderCard ref={childRefs[index]} className='swipe' key={character.name} onSwipe={(dir) => swiped(dir, character.name)} onCardLeftScreen={() => outOfFrame(character.name)}>
-            <div style={{ backgroundImage: 'url(' + character.url + ')' }} className='card'>
-              <h3>{character.name}</h3>
+      <h1>Tinder for cryptomemes</h1>
+      <div className="cardContainer">
+        {characters.map((character, index) => (
+          <TinderCard
+            ref={childRefs[index]}
+            className="swipe"
+            key={character.title}
+            onSwipe={(dir) => swiped(dir, character.title)}
+            onCardLeftScreen={() => outOfFrame(character.title)}
+          >
+            <div
+              style={{ backgroundImage: "url(" + character.url + ")" }}
+              className="card"
+            >
+              <h3>{character.title}</h3>
             </div>
           </TinderCard>
-        )}
+        ))}
       </div>
-      <div className='buttons'>
-        <button onClick={() => swipe('left')}>Swipe left!</button>
-        <button onClick={() => swipe('right')}>Swipe right!</button>
+      <div className="buttons">
+        <button onClick={() => swipe("left")}>Swipe left!</button>
+        <button onClick={() => swipe("right")}>Swipe right!</button>
       </div>
-      {lastDirection ? <h2 key={lastDirection} className='infoText'>You swiped {lastDirection}</h2> : <h2 className='infoText'>Swipe a card or press a button to get started!</h2>}
+      {lastDirection ? (
+        <h2 key={lastDirection} classtitle="infoText">
+          You swiped {lastDirection}
+        </h2>
+      ) : (
+        <h2 className="infoText">
+          Swipe a card or press a button to get started!
+        </h2>
+      )}
     </div>
-  )
+  );
 }
 
-export default Advanced
+export default Advanced;
